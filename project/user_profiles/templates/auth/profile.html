@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block titl %} Profile {% endblock%}
+
+{% block content %}
+<h1 class="title">Hi, {{name}} </h1>
+{% if current_user.username == "admin" %}
+<h5 class="text-center"><a href="{{url_for('admins.search_user')}}">Search User</a></h5>
+<h5 class="text-center"><a href="{{url_for('admins.create_precinct')}}">Create Precinct</a></h5>
+<h5 class="text-center"><a href="{{url_for('admins.pending_registrations')}}">Pending Registrations</a></h5>
+{% endif %}
+{% endblock %}

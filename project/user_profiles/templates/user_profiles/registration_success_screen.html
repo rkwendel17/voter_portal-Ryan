@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+<!--Bootstrap link: https://mdbootstrap.com/docs/standard/forms/input-fields/-->
+{% block content %}
+<br>
+<h1 class="text-center">{% block title %} Success! {% endblock %}</h1>
+<h5 class="text-center">Your email has been verified.</h5>
+<br>
+<h5 class="text-center">Please wait for a United States representative</h5>
+<h5 class="text-center">to approve your registration.</h5>
+<br>
+<p class="text-center">You will receive an email with next steps once approved.</p>
+
+
+<form action="{{url_for('general.home')}}">
+    <div class="text-center">
+        <div class="form-group">
+            <button type="submit" class="btn btn-secondary btn-lg" style="width:30%" href>Return to home page</button>
+        </div>
+     </div>
+</form>
+
+
+{% endblock %}

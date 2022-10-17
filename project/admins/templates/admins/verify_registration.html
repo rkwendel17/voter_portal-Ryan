@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+<!--Bootstrap link: https://mdbootstrap.com/docs/standard/forms/input-fields/-->
+<!-- Pagination source: https://betterprogramming.pub/simple-flask-pagination-example-4190b12c2e2e -->
+{% block content %}
+<br>
+<h1 class="text-center">{% block title %} Pending Registration {% endblock %}</h1>
+<h3>{{user.first_name + " " + user.middle_name + " " + user.last_name}}</h3>
+<p>&emsp;<strong>Submitted:</strong> {{user.created}}</p>
+<p>&emsp;<strong>Social Security Number:</strong> {{user.ssn}}</p>
+<p>&emsp;<strong>Driver's License Number:</strong> {{user.dln}}</p>
+<p>&emsp;<strong>Address:</strong> {{user.address.street_address}}, {{user.address.city}}, {{user.address.state}} {{user.address.zip_code}}</p>
+<p>&emsp;<strong>Email:</strong> {{user.email}}</p>
+
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <form action="{{ url_for('user_profiles.deny_registration', id=user.id) }}" method="post">
+                <button type="submit" class="btn btn-danger btn-lg btn-block">Deny</button>
+            </form>
+
+        </div>
+        <div class="col-sm">
+            <form action="{{ url_for('user_profiles.approve_registration', id=user.id) }}" method="post">
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Approve</button>
+            </form>
+        </div>
+        <b class="col-sm">
+            <a href="{{ url_for('admins.pending_registrations') }}" class="btn btn-info btn-lg btn-block" >Exit</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

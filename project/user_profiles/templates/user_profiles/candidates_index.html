@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+<!--Bootstrap link: https://mdbootstrap.com/docs/standard/forms/input-fields/-->
+<!-- Pagination source: https://betterprogramming.pub/simple-flask-pagination-example-4190b12c2e2e -->
+{% block content %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="{{url_for('user_profiles.static', filename='scripts/candidates.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('user_profiles.static', filename='css/candidates.css')}}">
+
+
+<br>
+<h1 class="text-center">{% block title %} Candidates {% endblock %}</h1>
+<div class="shadow table-responsive">
+    <table class="table table-sm table-bderless mb-0">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Details</th>
+                <th>Vote</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if True %}  {# if race_candidates.total #}
+                {% for candidate in race_candidates %} {# % for candidate in race_candidates.items % #}
+                    <tr>
+                        <th scope="row">{{ candidate.Name }}</th>
+                        <td><a href="{{ url_for('user_profiles.candidate', id=candidate.id) }}" class="btn btn-outline-dark" >View</a></td>
+                        <td><button class="candidate_select btn btn-outline-dark" value="{{candidate.id}}">Select</button></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <td scope="row" style="font-style: italic">There are no elections at this time</td>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<!--TODO: insert pagination here-->
+{#
+
+<div class="text-right">
+    <a href="{{ url_for('user_profiles.candidates', page=race_candidates.prev_num) }}"
+       class="btn btn-outline-dark
+       {% if race_candidates.page == 1 %}disabled{% endif %}">
+        &laquo;
+    </a>
+    <!-- Loop through the number of pages to display a link for each-->
+    {% for page_num in race_candidates.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+            <!-- Check for the active page and set the link to "Active"-->
+            {% if race_candidates.page == page_num %}
+            <a href="{{ url_for('user_profiles.candidates', page=page_num) }}"
+               class="btn btn-dark">
+                {{ page_num }}
+            </a>
+            {% else %}
+            <a href="{{ url_for('user_profiles.candidates', page=page_num) }}"
+               class="btn btn-outline-dark">
+                {{ page_num }}
+            </a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+    <a href="{{ url_for('user_profiles.candidates', page=race_candidates.next_num) }}"
+       class="btn btn-outline-dark
+       {% if race_candidates.page == race_candidates.pages %}disabled{% endif %}">
+        &raquo;
+    </a>
+</div>
+<p class="text-right mt-3">
+   Showing page {{ race_candidates.page }} of {{ race_candidates.pages + (race_candidates.pages == 0) }}
+</p>
+
+#}
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <form action="{{ url_for('user_profiles.abstain', race_id=race.id) }}" method="post">
+                <button type="submit" class="btn btn-secondary btn-lg btn-block">Abstain</button>
+            </form>
+
+        </div>
+        <div class="col-sm">
+            <form method="post" action="{{ url_for('user_profiles.vote', race_id=race.id) }}">
+                <input type="hidden" name="candidate_id" placeholder="First"
+                        class="form-control"
+                        id="candidate_id" value="" required />
+                <input type="hidden" name="pin" placeholder="Pin"
+                        class="form-control"
+                        id="pin" value="" required />
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Vote</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $("#pin").val(localStorage.getItem('pin'));
+</script>
+
+</form>
+{% endblock %}

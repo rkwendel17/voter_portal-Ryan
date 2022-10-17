@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+<!--Bootstrap link: https://mdbootstrap.com/docs/standard/forms/input-fields/-->
+{% block content %}
+<h1>{% block title %} Voter Registration {% endblock %}</h1>
+<!--<p class="note"><em>* = required field</em></p>-->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet" />
+
+<script src="{{url_for('user_profiles.static', filename='scripts/google_api.js')}}"></script>
+
+<script src="{{url_for('user_profiles.static', filename='scripts/register.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('user_profiles.static', filename='css/register.css')}}">
+
+
+
+<form method="post" action="{{ url_for('user_profiles.register') }}">
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label>Name</label>
+                    <div class="row">
+                        <div class="col-4">
+                            <input type="text" name="first_name" id="first_name" placeholder="First"
+                                class="form-control"
+                                value="{{ request.form['first_name'] or (user and user.first_name) }}" required />
+                        </div>
+                        <div class="col-4">
+                            <input type="text" name="middle_name" id="middle_name" placeholder="Middle"
+                                class="form-control"
+                                value="{{ request.form['middle_name'] or (user and user.middle_name) }}" />
+                            <small class="w-100">Optional</small>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" name="last_name" id="last_name" placeholder="Last" class="form-control"
+                                value="{{ request.form['last_name'] or (user and user.last_name) }}" required />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" placeholder="Username" class="form-control"
+                        value="{{ request.form['username'] or (user and user.username) }}" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Password" class="form-control"
+                        value="{{ request.form['password'] }}" required />
+                    <div id="strength"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" placeholder="Email" class="form-control"
+                        value="{{ request.form['email'] or (user and user.email) }}" required />
+
+                </div>
+
+                <div class="form-group">
+                    <label for="license">Driver's License</label>
+                    <input type="text" name="license" id="license" placeholder="##-##-##-##" class="form-control"
+                        value="{{ request.form['license'] or (user and user.dln) }}" pattern="^\d\d-\d\d-\d\d-\d\d$"
+                        required />
+                </div>
+
+                <div class="form-group">
+                    <label for="social">Social Security Number</label>
+                    <input type="text" name="social" id="social" placeholder="####" class="form-control"
+                        value="{{ request.form['social'] or (user and user.ssn) }}" pattern="^\d\d\d\d$" required />
+                </div>
+
+
+            </div>
+            <div class="col-3"></div>
+
+            <div class="col-4">
+                <br>
+                <!-- Avoid the word "address" in id, name, or label text to avoid browser autofill from conflicting with Place Autocomplete. Star or comment bug https://crbug.com/587466 to request Chromium to honor autocomplete="off" attribute. -->
+                <div class="form-group">
+                    <label for="ship-address">Deliver to*</label>
+
+                    <input id="ship-address" name="ship-address"
+                        value="{{ request.form['ship-address'] or (address and address.street_address) }}" required
+                        class="form-control" autocomplete="off" />
+                </div>
+
+                <div class="form-group">
+                    <label for="address2">Apartment, unit, suite, or floor #</label>
+                    <input id="address2" name="address2" class="form-control"
+                        value="{{ request.form['address2'] or (address and address.apt_number) }}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="locality">City*</label>
+                    <input id="locality" name="locality" required class="form-control"
+                        value="{{ request.form['locality'] or (address and address.city) }}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="state">State/Province*</label>
+                    <input id="state" name="state" required class="form-control"
+                        value="{{ request.form['state'] or (address and address.state) }}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="postcode">Postal code*</label>
+                    <input id="postcode" name="postcode" required class="form-control"
+                        value="{{ request.form['postcode'] or (address and address.zip_code) }}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="country">Country/Region*</label>
+                    <input id="country" name="country" required class="form-control"
+                        value="{{ request.form['country'] or (address and address.country) }}" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col text-center">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg" style="width:50%">Submit</button>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+<script
+    src="https://maps.googleapis.com/maps/api/js?key={{config['API_KEY']}}&callback=initAutocomplete&libraries=places&v=weekly"
+    async></script>
+{% endblock %}

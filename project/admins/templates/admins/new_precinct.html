@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+<!--Bootstrap link: https://mdbootstrap.com/docs/standard/forms/input-fields/-->
+<!-- Pagination source: https://betterprogramming.pub/simple-flask-pagination-example-4190b12c2e2e -->
+{% block content %}
+<br>
+<h1 class="text-center">{% block title %} Precinct Creation Page {% endblock %}</h1>
+<!--<p class="note"><em>* = required field</em></p>-->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet" />
+
+<script src="{{url_for('user_profiles.static', filename='scripts/google_api.js')}}"></script>
+<script src="{{url_for('admins.static', filename='scripts/precinct.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('admins.static', filename='css/precinct.css')}}">
+
+<form method="post" action="{{ url_for('admins.create_precinct') }}">
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label>Poll Manager</label>
+                    <select class="form-control" name="poll_manager" id="poll_manager" required>
+                        {% if request.form['poll_manager'] %}
+                            <option value="">Choose a manager</option>
+                        {% else %}
+                            <option value="" selected>Choose a manager</option>
+                        {% endif %}
+                        {% for manager in managers %}
+                            {% if request.form['poll_manager'] == (manager.id|string) %}
+                                <option value="{{ manager.id }}" selected>{{ manager.first_name + " " + manager.last_name }}</option>
+                            {% else %}
+                                <option value="{{ manager.id }}">{{ manager.first_name + " " + manager.last_name}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="precinct_name">Precinct Name</label>
+                    <input id="precinct_name" name="precinct_name"
+                        value="{{ request.form['precinct_name'] }}" required
+                        class="form-control" />
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input id="phone_number" name="phone_number"
+                        value="{{ request.form['phone_number'] }}" required
+                        class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-6">
+                <br>
+                <label>Zipcodes Covered:</label>
+                <div id="zip-container" class="container border ">
+
+                    <div class="row zipTable" name="riepilogo" id="riepilogo">
+                        <div class="col border"> Starting Zipcode</div>
+                        <div class="col border">Final Zipcode</div>
+                        <div class="w-100"></div>
+                    </div>
+
+                </div>
+
+                <br>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <input id="zip-start" name="zip-start" placeholder="Starting Zipcode"
+                                value="{{ request.form['zip-start'] }}"
+                                class="form-control" />
+                            <div class="invalid-feedback">
+                                Invalid Zip+4
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-group">
+                            <input id="zip-end" name="zip-end" placeholder="Final Zipcode"
+                                value="{{ request.form['zip-end'] }}"
+                                class="form-control" />
+                            <div class="invalid-feedback">
+                                Invalid Zip+4
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <button id="add-zip" type="button" class="btn btn-secondary btn-sm" style="width:100%" disabled>Add range</button>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-group">
+                            <button id="remove-row" type="button" class="btn btn-secondary btn-sm" style="width:100%" disabled>Remove Row</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-1"></div>
+
+            <div class="col-4">
+                <br>
+                <!-- Avoid the word "address" in id, name, or label text to avoid browser autofill from conflicting with Place Autocomplete. Star or comment bug https://crbug.com/587466 to request Chromium to honor autocomplete="off" attribute. -->
+                <div class="form-group">
+                    <label for="ship-address">Deliver to*</label>
+
+                    <input id="ship-address" name="ship-address"
+                        value="{{ request.form['ship-address'] or (address and address.street_address) }}" required
+                        class="form-control" autocomplete="off" />
+                </div>
+
+                <div class="form-group">
+                    <label for="address2">Apartment, unit, suite, or floor #</label>
+                    <input id="address2" name="address2" class="form-control"
+                        value="{{ request.form['address2'] or (address and address.apt_number) }}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="locality">City*</label>
+                    <input id="locality" name="locality" required class="form-control"
+                        value="{{ request.form['locality'] or (address and address.city) }}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="state">State/Province*</label>
+                    <input id="state" name="state" required class="form-control"
+                        value="{{ request.form['state'] or (address and address.state) }}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="postcode">Postal code*</label>
+                    <input id="postcode" name="postcode" required class="form-control"
+                        value="{{ request.form['postcode'] or (address and address.zip_code) }}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="country">Country/Region*</label>
+                    <input id="country" name="country" required class="form-control"
+                        value="{{ request.form['country'] or (address and address.country) }}" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col text-center">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg" style="width:50%">Submit</button>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+<script
+    src="https://maps.googleapis.com/maps/api/js?key={{config['API_KEY']}}&callback=initAutocomplete&libraries=places&v=weekly"
+    async></script>
+{% endblock %}

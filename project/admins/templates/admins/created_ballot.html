@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{%block title %}Reset Password{% endblock %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet" />
+
+<div class="text-center">
+    <h1>Created Ballot</h1>
+</div>
+<div>
+<h5>Precinct:</h5>
+<h5>{{ elections[0].precinct_id }}</h5>
+</div>
+<h5> -------- </h5>
+{% for election in elections %}
+    <div>
+	    <h5> {{ election.date }}: </h5>
+        <h5> {{ election.name }} </h5>
+        <h5> Canidates:</h5>
+        {% for race in races %}
+            {% if race.election_id == election.id %}
+                {% for canidate in canidates %}
+                    {% if canidate.id == race.canidate_1_id or canidate.id == race.canidate_2_id %}
+                        <p>{{ canidate.name }}</p>
+			        {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endfor %}
+{% endblock %}
+

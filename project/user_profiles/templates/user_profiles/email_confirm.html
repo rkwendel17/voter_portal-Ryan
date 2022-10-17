@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+<!--Bootstrap link: https://mdbootstrap.com/docs/standard/forms/input-fields/-->
+{% block content %}
+<h1>{% block title %} Thank you for registering! {% endblock %}</h1>
+<h2>An email confirmation has been sent to {{user.email}}</h2>
+<br>
+<h5 class="text-center">Click the link found in your email or enter the code below</h5>
+
+<form method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <input type="text" name="code" id="code"
+                       placeholder="CODE" class="form-control text-center"
+                       value="{{ request.form['code'] }}" required />
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div class="row">
+         <div class="col text-center">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg" style="width:50%">Submit</button>
+            </div>
+         </div>
+     </div>
+</form>
+<h5 class="text-center">Wrong email? <a href="{{url_for('user_profiles.retry_registration', id=user.id)}}">click here</a> to go back</h5>
+<h6 class="text-center">Didn't recieve an email? make sure to check your spam or <a href="{{url_for('user_profiles.email_verification', id=user.id, resend='True')}}">click here</a> to send again</h6>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{%block title %}Reset Password{% endblock %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet" />
+
+<div class="text-center">
+    <h1>Search Users</h1>
+</div>
+
+<div class="d-flex justify-content-center">
+    <form method="POST">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" name="username" class="form-control" id="username">
+        </div>
+        <div class="form-group">
+            <label for="e-mail">E-mail</label>
+            <input type="text" name="e-mail" class="form-control" id="e-mail">
+        </div>
+        <div class="form-group">
+            <label for="first">First Name</label>
+            <input type="text" name="first" class="form-control" id="first">
+        </div>
+        <div class="form-group">
+            <label for="last">Last Name</label>
+            <input type="text" name="last" class="form-control" id="last">
+        </div>
+        <div class="form-group">
+            <label for="precinct">Precinct ID</label>
+            <input type="text" name="precinct" class="form-control" id="precinct">
+        </div>
+        <div class="form-group">
+            <label for="zipcode">Zipcode</label>
+            <input type="text" name="zipcode" class="form-control" id="zipcode">
+        </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" name="city" class="form-control" id="city">
+        </div>
+        <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" name="state" class="form-control" id="state">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+<!--Bootstrap link: https://mdbootstrap.com/docs/standard/forms/input-fields/-->
+<!-- Pagination source: https://betterprogramming.pub/simple-flask-pagination-example-4190b12c2e2e -->
+{% block content %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="{{url_for('user_profiles.static', filename='scripts/candidates.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('user_profiles.static', filename='css/candidates.css')}}">
+
+
+<br>
+<h1 class="text-center">{% block title %} Your Election Summary {% endblock %}</h1>
+{% if pin %}
+<div class="shadow table-responsive">
+    <table class="table table-sm table-bderless mb-0">
+        <thead class="thead-dark">
+            <tr>
+                <th>Race</th>
+                <th>Candidate</th>
+                <th>Date Voted</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if results %}
+                {% for result in results %}
+                    <tr>
+                        <th scope="row">{{ result.race_id }}</th>
+                        <td scope="row">{{ result.candidate_id }}</td>
+                        <td scope="row">{{ result.created }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <td scope="row" style="font-style: italic">You have not voted in any races recently</td>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+<br>
+<div class="shadow p-3 mb-5 bg-white rounded  mx-2">
+    <h4 class="text-center">Your Pin: </h4><p class="text-center" id="pin_placeholder"></p>
+    <h6 class="text-center">To print this document, right-click on the webpage and select the "print" option</h6>
+</div>
+{% else %}
+
+<div class="container shadow p-3 mb-5 bg-white rounded  mx-2">
+    <form action="{{ url_for('user_profiles.voter_summary', election_id=election.id) }}" method="get">
+        <label for="pin_input">Enter your voter pin</label>
+        <div class="row">
+            <div class="col-sm">
+                <input name="pin_input" placeholder="Pin"
+                        class="form-control"
+                        id="pin_input" value="" required />
+            </div>
+            <div class="col-sm">
+                <button type="submit" class="btn btn-primary btn-lg btn-block" id="pin_submit">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endif %}
+
+<script>
+$(function(){
+    var pin = localStorage.getItem('pin');
+    var pin_param = new URL(location).searchParams.get("pin_input");
+    $("#pin_placeholder").html(pin);
+    if (pin && !pin_param) {
+        $("#pin_input").val(pin);
+        $("#pin_submit").click();
+    } else if (!pin && pin_param) {
+        localStorage.setItem('pin', pin_param);
+        $("#pin_placeholder").html(pin_param);
+    }
+});
+</script>
+
+</form>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+<!--Bootstrap link: https://mdbootstrap.com/docs/standard/forms/input-fields/-->
+<!-- Pagination source: https://betterprogramming.pub/simple-flask-pagination-example-4190b12c2e2e -->
+{% block content %}
+<br>
+<h1 class="text-center">{% block title %} Races {% endblock %}</h1>
+
+<!-- ✅ load jQuery ✅ -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div class="shadow table-responsive">
+    <table class="table table-sm table-bderless mb-0">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Vote</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if True %}  {# if races.total #}
+                {% for race in races %} {# % for race in races.items % #}
+                    <tr>
+                        <th scope="row">{{ race.Name }}</th>
+                        <td>{{ race.Date }}</td>
+                        {% if vote_map[race.id] %}
+                            <td>Vote Submitted</td>
+                        {% else %}
+                            <td><a href="{{ url_for('user_profiles.candidates', race_id=race.id) }}" class="btn btn-outline-dark" >Candidates</a></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <td scope="row" style="font-style: italic">There are no elections at this time</td>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<!--TODO: insert pagination here-->
+{#
+
+<div class="text-right">
+    <a href="{{ url_for('user_profiles.races', page=races.prev_num) }}"
+       class="btn btn-outline-dark
+       {% if races.page == 1 %}disabled{% endif %}">
+        &laquo;
+    </a>
+    <!-- Loop through the number of pages to display a link for each-->
+    {% for page_num in races.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+            <!-- Check for the active page and set the link to "Active"-->
+            {% if races.page == page_num %}
+            <a href="{{ url_for('user_profiles.races', page=page_num) }}"
+               class="btn btn-dark">
+                {{ page_num }}
+            </a>
+            {% else %}
+            <a href="{{ url_for('user_profiles.races', page=page_num) }}"
+               class="btn btn-outline-dark">
+                {{ page_num }}
+            </a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+    {% endfor %}
+    <a href="{{ url_for('user_profiles.races', page=races.next_num) }}"
+       class="btn btn-outline-dark
+       {% if races.page == races.pages %}disabled{% endif %}">
+        &raquo;
+    </a>
+</div>
+<p class="text-right mt-3">
+   Showing page {{ races.page }} of {{ races.pages + (races.pages == 0) }}
+</p>
+
+#}
+
+<br><br>
+
+<div class="shadow p-3 mb-5 bg-white rounded  mx-2">
+    <h4 class="text-center">Your Pin: </h4><p class="text-center" id="pin_placeholder"></p>
+    <h6 class="text-center">Save this to view your votes later</h6>
+</div>
+
+<script>
+    $("#pin_placeholder").html(localStorage.getItem('pin'))
+    if (!localStorage.getItem('pin')) {
+        $.getJSON("{{ url_for('user_profiles.create_user_pin') }}", function(data) {
+            console.log(data);
+            if (data.pin != '') {
+                localStorage.setItem('pin', data.pin); // TODO: add support for multiple pins on one machine
+            } else {
+                localStorage.setItem('pin', 'MISSING'); // TODO: add support for multiple pins on one machine
+            }
+            location.reload();
+        });
+    }
+</script>
+{% endblock %}

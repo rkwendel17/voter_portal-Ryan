@@ -1,0 +1,21 @@
+name: PushGitlab
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with: 
+        fetch-depth: 0
+
+    - name: Push To Gitlab
+      run: |
+        echo Starting to push repo to gitlab
+        git config user.name "kjweimer"
+        git remote set-url origin "https://oauth2:${{ secrets.GITLAB_PASSWORD }}@research-git.uiowa.edu/sonarqube/cs5800/spring2021/team_8/voterportal.git"
+        git push origin main --force
